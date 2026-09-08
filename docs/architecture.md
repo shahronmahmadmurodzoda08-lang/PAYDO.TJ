@@ -1,0 +1,51 @@
+# Architecture — PAYDO.TJ
+
+## Услуб: Clean Architecture + Feature-based
+
+Ҳар феча (`lib/features/<name>/`) се қабат дорад:
+
+```
+features/<name>/
+  data/           # татбиқи воқеӣ: Firebase, HTTP, local cache
+  domain/         # abstract repository-ҳо, модел/entity-и соф (Firebase-и он ҷо нест)
+  presentation/   # виҷетҳо, screen-ҳо, Riverpod providers/controllers
+```
+
+**Сабаб:** domain layer аз ягон SDK вобаста нест → санҷиш (unit test) осон аст ва агар дар оянда backend иваз шавад (масалан аз Firebase ба backend-и худ), танҳо `data/` тағйир меёбад.
+
+## State management: Riverpod
+
+Қарор: **Riverpod** (на Bloc) барои тамоми лоиҳа интихоб шуд.
+
+Сабаб: барои Super App бо даҳҳо феча, `Provider`/`AsyncNotifier`-ҳои Riverpod бо ҳам осонтар таркиб мешаванд (масалан profile provider метавонад ба auth provider вобаста бошад бе бойлерплейти иловагӣ), ва DevTools/testing-и он барои лоиҳаи калон мувофиқтар аст.
+
+**Қоида:** аз ин лаҳза сар карда, ҲАМА феча бояд Riverpod истифода барад — на Provider-и оддӣ, на setState барои ҳолати муштарак, на Bloc.
+
+## Routing: go_router
+
+Як `GoRouter` марказӣ дар `lib/routing/app_router.dart`. Ҳар роҳи нав дар ҳамин файл (ё дар зерфайли ба он вобаста) илова карда мешавад — на ҳар ҷо бо `Navigator.push` бевосита.
+
+`redirect` дар router ба `authStateProvider` (Riverpod stream аз Firebase Auth) гӯш медиҳад: агар корбар ворид нашуда бошад → `/login`; агар ворид шуда бошад → `/home`. Ин мантиқ дар PHASE 2+ васеъ мешавад (масалан: агар профил пурра набошад → `/complete-profile`).
+
+**Bottom navigation (PHASE 3):** роҳи `/home` ба `RootShell` мебарад — виҷети дохилии он (на go_router-и алоҳида барои ҳар tab) бо `IndexedStack` + `BottomNavigationBar` кор мекунад. Қарор: барои 4 tab-и оддӣ (Home/Search/Map/Profile) `StatefulShellRoute`-и go_router зарурат надошт — `IndexedStack` соддатар аст ва ҳолати ҳар tab-ро нигоҳ медорад (масалан scroll position). Агар дар оянда deep-linking ба tab-и мушаххас лозим шавад (масалан push notification → Chat tab), метавон ба `StatefulShellRoute` гузашт бе тағйири феча-ҳо.
+
+## Firebase
+
+- **Authentication:** Google Sign-In танҳо (PHASE 1). Дигар усулҳо (телефон, email/parol) дар спецификация зикр нашудаанд — илова намешаванд, то аз spec берун набароем.
+- **Firestore:** сохтори коллексия дар `docs/database.md`.
+- **Storage:** барои сурати профил (PHASE 2) ва сурати маҳсулот (PHASE 6+).
+- **Messaging:** PHASE 15.
+
+## Theme
+
+Як `AppTheme` (`lib/core/theme/`) — light/dark, ранги брендӣ сабз (`AppColors.primary`). Ягон виҷет набояд ранг/style-ро ба таври hardcode нависад — ҳама аз `Theme.of(context)` ё `AppColors`/`AppTheme` мегиранд.
+
+## Хатогиҳо (Error handling)
+
+`lib/core/errors/failures.dart` — синфҳои `Failure` (Network, Auth, Server, Cache, Permission, Unknown). Repository-ҳо хатогиро ба ин намуд табдил медиҳанд, то UI паём бо забони Тоҷикӣ нишон диҳад, на technical exception-и хом.
+
+## Чиро дар PHASE 0 қасдан НАСОХТЕМ
+
+- Payment integration — banди 22/36 мегӯяд то backend омода нашавад, фаъол накунед. Ҳоло ягон коди пардохт нест.
+- AI features — banди 36, барои марҳилаи оянда.
+- l10n (ru/en) — ҳоло матнҳо мустақим дар `AppStrings` бо Тоҷикӣ; сохтори он тавре аст, ки ба package `intl`/ARB осон кӯчонида шавад вақте ки лозим шавад.
