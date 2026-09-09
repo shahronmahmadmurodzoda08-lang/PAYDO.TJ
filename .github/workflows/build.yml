@@ -1,4 +1,4 @@
-name: PAYDO.TJ Android APK
+name: PAYDO.TJ APK
 
 on:
   workflow_dispatch:
@@ -7,8 +7,8 @@ on:
       - main
 
 jobs:
-  android-apk:
-    name: Build Android APK
+  build-apk:
+    name: Build PAYDO.TJ APK
     runs-on: ubuntu-latest
 
     steps:
@@ -19,36 +19,27 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: "3.35.0"
           cache: true
 
-      - name: Generate Android platform
-        run: flutter create --platforms=android --project-name=paydo_tj .
+      - name: Show Flutter version
+        run: flutter --version
 
-      - name: Get dependencies
-        run: flutter pub get
-
-      - name: Clean
-        run: flutter clean
-
-      - name: Get dependencies again
-        run: flutter pub get
-
-      - name: Generate Android app icons
-        shell: bash
+      - name: Recreate Android platform
         run: |
-          if grep -q "flutter_launcher_icons" pubspec.yaml; then
-            dart run flutter_launcher_icons
-          else
-            echo "flutter_launcher_icons is not configured; using existing Android icon."
-          fi
+          flutter create \
+            --platforms=android \
+            --project-name=paydo_tj \
+            --overwrite .
 
-      - name: Build release APK
+      - name: Get packages
+        run: flutter pub get
+
+      - name: Build APK
         run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: PAYDO-TJ-Android-APK
+          name: PAYDO-TJ-APK
           path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
