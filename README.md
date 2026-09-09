@@ -12,7 +12,8 @@ Super App / marketplace-и бисёрфунксионалӣ барои Тоҷи�
 | 1 | Registration / Google Auth | ✅ Анҷом ёфт |
 | 2 | User Profile | ✅ Анҷом ёфт |
 | 3 | Home Page | ✅ Анҷом ёфт | `lib/features/home/` (RootShell, bottom nav 5 tab) |
-| 4–25 | ... | ⏳ Дар навбат |
+| 4 | Marketplace | ✅ Анҷом ёфт | `lib/features/marketplace/`, `lib/models/product_model.dart` |
+| 5–25 | ... | ⏳ Дар навбат |
 
 Ниг. [`docs/roadmap.md`](docs/roadmap.md) барои феҳристи пурраи марҳилаҳо.
 

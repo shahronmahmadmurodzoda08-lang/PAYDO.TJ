@@ -20,6 +20,28 @@ service cloud.firestore {
       allow delete: if false; // Ҳисобро тавассути admin panel нест кардан лозим (PHASE 19)
     }
 
+    // Маҳсулот (PHASE 4/6): хондан барои ҳама кушода, навиштан танҳо
+    // барои соҳиби маҳсулот (sellerId). Иҷозати "create" бе sellerId
+    // = auth.uid дода намешавад, то корбар аз номи дигаре нанависад.
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.resource.data.sellerId == request.auth.uid;
+      allow update, delete: if request.auth != null
+                    && resource.data.sellerId == request.auth.uid;
+    }
+
+    // Favorites (PHASE 4): ҳар корбар танҳо favorite-и худро идора
+    // мекунад; docId бо конвенсияи `{uid}_{itemId}` сохта мешавад.
+    match /favorites/{favoriteId} {
+      allow read: if request.auth != null
+                  && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid;
+      allow delete: if request.auth != null
+                    && resource.data.userId == request.auth.uid;
+    }
+
     // Ҳама коллексияҳои дигар то муайян шуданашон дар марҳилаҳои
     // дахлдор пурра баста мебошанд (default deny).
     match /{document=**} {
