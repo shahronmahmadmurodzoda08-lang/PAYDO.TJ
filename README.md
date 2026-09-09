@@ -15,7 +15,8 @@ Super App / marketplace-и бисёрфунксионалӣ барои Тоҷи�
 | 4 | Marketplace | ✅ Анҷом ёфт |
 | 5 | Business Profile | ✅ Анҷом ёфт |
 | 6 | Product Management | ✅ Анҷом ёфт |
-| 7–25 | ... | ⏳ Дар навбат |
+| 7 | Cart and Orders | ✅ Анҷом ёфт |
+| 8–25 | ... | ⏳ Дар навбат |
 
 Ниг. [`docs/roadmap.md`](docs/roadmap.md) барои феҳристи пурраи марҳилаҳо.
 

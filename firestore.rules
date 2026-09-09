@@ -53,6 +53,23 @@ service cloud.firestore {
       allow delete: if false; // тавассути admin panel (PHASE 19)
     }
 
+    // Orders (PHASE 7): items embedded (ниг. эзоҳи тарроҳӣ дар
+    // lib/models/order_model.dart). Хондан: харидор ё яке аз
+    // seller-ҳои дар sellerIds. Навиштан (create): танҳо харидор аз
+    // номи худ. Тағйир (масалан status): харидор (cancel) ё seller
+    // (пешрафти status).
+    match /orders/{orderId} {
+      allow read: if request.auth != null
+                  && (resource.data.customerId == request.auth.uid
+                      || request.auth.uid in resource.data.sellerIds);
+      allow create: if request.auth != null
+                    && request.resource.data.customerId == request.auth.uid;
+      allow update: if request.auth != null
+                    && (resource.data.customerId == request.auth.uid
+                        || request.auth.uid in resource.data.sellerIds);
+      allow delete: if false;
+    }
+
     // Ҳама коллексияҳои дигар то муайян шуданашон дар марҳилаҳои
     // дахлдор пурра баста мебошанд (default deny).
     match /{document=**} {
