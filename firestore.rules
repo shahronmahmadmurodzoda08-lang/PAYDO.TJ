@@ -1,0 +1,29 @@
+rules_version = '2';
+
+// PAYDO.TJ — Firestore Security Rules
+// PHASE 1: танҳо коллексияи `users` муайян шудааст.
+// Ҳар феча (marketplace, jobs, chat, ...) қоидаҳои худро дар феҷаи
+// дахлдор илова мекунад — ин файлро дар PHASE 4+ идома медиҳем.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Корбар танҳо документи худро сохта/хонда/навишта метавонад.
+    // Дигарон метавонанд профили ҷамъиятиро хонанд (масалан барои
+    // намоиши profile-и seller дар marketplace), вале не тағйир диҳанд.
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+                    && request.auth.uid == userId
+                    && request.resource.data.uid == userId;
+      allow update: if request.auth != null
+                    && request.auth.uid == userId;
+      allow delete: if false; // Ҳисобро тавассути admin panel нест кардан лозим (PHASE 19)
+    }
+
+    // Ҳама коллексияҳои дигар то муайян шуданашон дар марҳилаҳои
+    // дахлдор пурра баста мебошанд (default deny).
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
