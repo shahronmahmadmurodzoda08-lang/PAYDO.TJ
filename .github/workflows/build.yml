@@ -1,18 +1,14 @@
-name: PAYDO.TJ Build
+name: PAYDO.TJ Android APK
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
-
-  # =========================
-  # ANDROID APK
-  # =========================
-  android:
-    name: Android APK
+  android-apk:
+    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
@@ -23,15 +19,31 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: "3.35.0"
+          cache: true
 
-      - name: Generate platform files
-        run: |
-          flutter create . --platforms=android,ios,windows
+      - name: Generate Android platform
+        run: flutter create --platforms=android --project-name=paydo_tj .
 
-      - name: Install dependencies
+      - name: Get dependencies
         run: flutter pub get
 
-      - name: Build APK
+      - name: Clean
+        run: flutter clean
+
+      - name: Get dependencies again
+        run: flutter pub get
+
+      - name: Generate Android app icons
+        shell: bash
+        run: |
+          if grep -q "flutter_launcher_icons" pubspec.yaml; then
+            dart run flutter_launcher_icons
+          else
+            echo "flutter_launcher_icons is not configured; using existing Android icon."
+          fi
+
+      - name: Build release APK
         run: flutter build apk --release
 
       - name: Upload APK
@@ -39,76 +51,4 @@ jobs:
         with:
           name: PAYDO-TJ-Android-APK
           path: build/app/outputs/flutter-apk/app-release.apk
-
-
-  # =========================
-  # WINDOWS
-  # =========================
-  windows:
-    name: Windows
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-
-      - name: Generate platform files
-        run: |
-          flutter create . --platforms=android,ios,windows
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build Windows
-        run: flutter build windows --release
-
-      - name: Zip Windows
-        shell: pwsh
-        run: |
-          Compress-Archive `
-            -Path build/windows/x64/runner/Release/* `
-            -DestinationPath PAYDO-TJ-Windows.zip
-
-      - name: Upload Windows
-        uses: actions/upload-artifact@v4
-        with:
-          name: PAYDO-TJ-Windows
-          path: PAYDO-TJ-Windows.zip
-
-
-  # =========================
-  # iOS
-  # =========================
-  ios:
-    name: iOS
-    runs-on: macos-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-
-      - name: Generate platform files
-        run: |
-          flutter create . --platforms=android,ios,windows
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build iOS
-        run: flutter build ios --release --no-codesign
-
-      - name: Upload iOS
-        uses: actions/upload-artifact@v4
-        with:
-          name: PAYDO-TJ-iOS
-          path: build/ios/iphoneos/Runner.app
+          if-no-files-found: error
