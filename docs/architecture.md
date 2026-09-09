@@ -31,6 +31,10 @@ features/<name>/
 
 **Business Profile (PHASE 5):** ҳар корбар ҳадди аксар як бизнес дошта метавонад дар MVP — `businesses/{ownerId}` (documentId = uid). Ин соддатар аст барои "оё корбар бизнес дорад?" (як `get`, на query). Агар дар оянда чандин филиал лозим шавад, метавон ба auto-id гузашт бе вайрон кардани UI (зеро ҳама ҷо аз рӯи `businessId` кор мекунад).
 
+**Cart and Orders (PHASE 7):** Cart device-local аст (SharedPreferences, JSON) — на Firestore, зеро он муваққатист ва то checkout шудан "ҳолати доимӣ" лозим надорад (арзонтар барои free-tier). Order-и `items` **embedded** дар худи документи `orders/{id}` нигоҳ дошта мешавад (на коллексияи алоҳидаи `order_items`, ки banди 27 номбар кардааст) — сабаб: андозаи order одатан хурд аст (якчанд item, на садҳо), ва хондани як order ба 1 Firestore read кам мешавад. Агар дар оянда query-и мустақил лозим шавад, гузариш ба коллексияи алоҳида имконпазир аст.
+
+**Chat (PHASE 8):** `chatId` детерминистӣ (`{uid1}_{uid2}`, sorted) — ниг. эзоҳи муфассал дар `lib/features/chat/domain/chat_repository.dart`. Ин пешгирии дучандии чат байни ҳамон ду нафар мекунад ва "чат ҳаст ё не" бе query иҷро мешавад. Chat феҳа мустақил аст (на зерфеҳаи marketplace/business/jobs), зеро як гуфтугӯ метавонад аз феҳаҳои гуногун (product/business/job/service) сар шавад — бинобар ин майдонҳои ихтиёрии `contextType`/`contextId`/`contextTitle` истифода мешаванд, на 4 феҳаи алоҳидаи чат.
+
 ## Firebase
 
 - **Authentication:** Google Sign-In танҳо (PHASE 1). Дигар усулҳо (телефон, email/parol) дар спецификация зикр нашудаанд — илова намешаванд, то аз spec берун набароем.

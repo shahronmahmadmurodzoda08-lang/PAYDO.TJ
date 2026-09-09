@@ -71,13 +71,45 @@
 | isVerified | bool | admin verify, PHASE 19 |
 | createdAt, updatedAt | timestamp | |
 
+### `orders/{orderId}` (PHASE 7)
+
+| Майдон | Навъ | Тавзеҳ |
+|---|---|---|
+| customerId | string | |
+| customerName, customerPhone, customerCity, customerAddress | string | address танҳо агар deliveryType='delivery' |
+| items | array\<map\> | **embedded** — ниг. эзоҳи тарроҳӣ дар `lib/models/order_model.dart` (на коллексияи алоҳидаи `order_items`) |
+| deliveryType | string | `'delivery'` \| `'pickup'` |
+| subtotal, deliveryFee, total | number | |
+| status | string | pending→accepted→preparing→ready→shipped→delivering→completed (ё cancelled) |
+| sellerIds | array\<string\> | денормализатсия барои query "orders барои ин seller" (array-contains) |
+| createdAt, updatedAt | timestamp | |
+
+**Cart** (banди 11) дар Firestore нест — device-local, ниг. `lib/models/cart_item_model.dart`.
+
+### `chats/{chatId}` ва `chats/{chatId}/messages/{messageId}` (PHASE 8)
+
+| Майдон (chat) | Навъ | Тавзеҳ |
+|---|---|---|
+| id | string | = documentId = `{uid1}_{uid2}` (sorted, детерминистӣ) |
+| participantIds | array\<string\> | ҳамеша 2 нафар дар PHASE 8 |
+| participantNames, participantPhotos | map | денормализатсия барои намоиши рӯйхат бе N+1 read |
+| lastMessageText/SenderId/At | string/timestamp | барои Chat List |
+| unreadCounts | map\<uid,int\> | |
+| contextType/Id/Title | string? | 'product'/'business'/... — аз куҷо чат сарчашма гирифт |
+
+| Майдон (message) | Навъ | Тавзеҳ |
+|---|---|---|
+| senderId | string | |
+| type | string | `'text'` \| `'image'` |
+| text, imageUrl | string? | |
+| timestamp | timestamp | |
+| isRead | bool | (соддакардашуда — ҳисоб дар сатҳи chat, на паём, ниг. `unreadCounts`) |
+
 ## Феҳристи коллексияҳои банақшагирифташуда (аз спецификация, банди 27)
 
 Ин рӯйхат дар `lib/core/constants/firestore_paths.dart` аллакай ҳамчун constant мавҷуд аст (то ном дар кодбоза дучандиягӣ надошта бошад), вале худи схема дар марҳилаи феҷаи дахлдор муайян карда мешавад:
 
 - `categories` — placeholder (ҳоло `ProductCategories` static, PHASE 19 динамикӣ мешавад)
-- `orders`, `order_items` — PHASE 7
-- `chats`, `messages` — PHASE 8
 - `jobs`, `job_applications` — PHASE 9
 - `services`, `service_orders` — PHASE 10
 - `accounting`, `debts`, `inventory`, `sales`, `expenses` — PHASE 11

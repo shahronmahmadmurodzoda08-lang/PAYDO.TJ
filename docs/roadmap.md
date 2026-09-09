@@ -12,8 +12,8 @@
 | 4 | Marketplace | ✅ Анҷом ёфт | `lib/features/marketplace/`, `lib/models/product_model.dart` |
 | 5 | Business Profile | ✅ Анҷом ёфт | `lib/features/business/`, `lib/models/business_model.dart` |
 | 6 | Product management | ✅ Анҷом ёфт | `lib/features/products/` |
-| 7 | Cart and Orders | ⏳ Дар навбат | `lib/features/cart/`, `lib/features/orders/` |
-| 8 | Chat | ⏳ | `lib/features/chat/` |
+| 7 | Cart and Orders | ✅ Анҷом ёфт | `lib/features/cart/`, `lib/features/orders/`, `lib/models/order_model.dart` |
+| 8 | Chat | ✅ Анҷом ёфт | `lib/features/chat/`, `lib/models/chat_model.dart` |
 | 9 | Jobs / Employment | ⏳ | `lib/features/jobs/` |
 | 10 | Services | ⏳ | `lib/features/services/` |
 | 11 | Accounting / Дафтари ҳисоб | ⏳ | `lib/features/accounting/` |
