@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-
   workflow_dispatch:
 
 jobs:
@@ -23,8 +22,11 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.0'
           channel: stable
+
+      - name: Generate platform files
+        run: |
+          flutter create . --platforms=android,ios,windows
 
       - name: Install dependencies
         run: flutter pub get
@@ -40,7 +42,7 @@ jobs:
 
 
   # =========================
-  # WINDOWS EXE
+  # WINDOWS
   # =========================
   windows:
     name: Windows
@@ -53,11 +55,11 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.0'
           channel: stable
 
-      - name: Enable Windows
-        run: flutter config --enable-windows-desktop
+      - name: Generate platform files
+        run: |
+          flutter create . --platforms=android,ios,windows
 
       - name: Install dependencies
         run: flutter pub get
@@ -93,8 +95,11 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.0'
           channel: stable
+
+      - name: Generate platform files
+        run: |
+          flutter create . --platforms=android,ios,windows
 
       - name: Install dependencies
         run: flutter pub get
@@ -102,13 +107,8 @@ jobs:
       - name: Build iOS
         run: flutter build ios --release --no-codesign
 
-      - name: Create iOS archive
-        run: |
-          mkdir -p PAYDO-TJ-iOS
-          cp -R build/ios/iphoneos/Runner.app PAYDO-TJ-iOS/
-
       - name: Upload iOS
         uses: actions/upload-artifact@v4
         with:
           name: PAYDO-TJ-iOS
-          path: PAYDO-TJ-iOS
+          path: build/ios/iphoneos/Runner.app
