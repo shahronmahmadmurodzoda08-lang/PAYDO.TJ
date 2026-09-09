@@ -1,4 +1,4 @@
-name: PAYDO.TJ APK
+name: PAYDO TJ Android APK
 
 on:
   workflow_dispatch:
@@ -7,12 +7,12 @@ on:
       - main
 
 jobs:
-  build-apk:
-    name: Build PAYDO.TJ APK
+  build-android:
+    name: Build PAYDO TJ APK
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout project
         uses: actions/checkout@v4
 
       - name: Setup Flutter
@@ -21,18 +21,37 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Show Flutter version
+      - name: Check Flutter
         run: flutter --version
 
-      - name: Recreate Android platform
-        run: |
-          flutter create \
-            --platforms=android \
-            --project-name=paydo_tj \
-            --overwrite .
+      - name: Create Android platform
+        run: flutter create --platforms=android --overwrite .
 
-      - name: Get packages
+      - name: Set application name
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path("android/app/src/main/AndroidManifest.xml")
+
+          if p.exists():
+              text = p.read_text()
+              text = text.replace(
+                  'android:label="${applicationName}"',
+                  'android:label="PAYDO TJ"'
+              )
+              text = text.replace(
+                  'android:label="paydo_tj"',
+                  'android:label="PAYDO TJ"'
+              )
+              p.write_text(text)
+          PY
+
+      - name: Install dependencies
         run: flutter pub get
+
+      - name: Generate Android icon
+        run: dart run flutter_launcher_icons
 
       - name: Build APK
         run: flutter build apk --release
