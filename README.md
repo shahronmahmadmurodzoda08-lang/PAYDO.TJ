@@ -11,9 +11,11 @@ Super App / marketplace-и бисёрфунксионалӣ барои Тоҷи�
 | 0 | Project Architecture | ✅ Анҷом ёфт |
 | 1 | Registration / Google Auth | ✅ Анҷом ёфт |
 | 2 | User Profile | ✅ Анҷом ёфт |
-| 3 | Home Page | ✅ Анҷом ёфт | `lib/features/home/` (RootShell, bottom nav 5 tab) |
-| 4 | Marketplace | ✅ Анҷом ёфт | `lib/features/marketplace/`, `lib/models/product_model.dart` |
-| 5–25 | ... | ⏳ Дар навбат |
+| 3 | Home Page | ✅ Анҷом ёфт |
+| 4 | Marketplace | ✅ Анҷом ёфт |
+| 5 | Business Profile | ✅ Анҷом ёфт |
+| 6 | Product Management | ✅ Анҷом ёфт |
+| 7–25 | ... | ⏳ Дар навбат |
 
 Ниг. [`docs/roadmap.md`](docs/roadmap.md) барои феҳристи пурраи марҳилаҳо.
 
