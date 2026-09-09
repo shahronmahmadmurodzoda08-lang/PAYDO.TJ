@@ -10,9 +10,9 @@
 | 2 | User Profile | ✅ Анҷом ёфт | `lib/features/profile/`, `storage.rules` |
 | 3 | Home Page | ✅ Анҷом ёфт | `lib/features/home/presentation/root_shell.dart`, `home_tab_screen.dart` |
 | 4 | Marketplace | ✅ Анҷом ёфт | `lib/features/marketplace/`, `lib/models/product_model.dart` |
-| 5 | Business Profile | ⏳ | `lib/features/business/` |
-| 6 | Product management | ⏳ | `lib/features/products/` |
-| 7 | Cart and Orders | ⏳ | `lib/features/cart/`, `lib/features/orders/` |
+| 5 | Business Profile | ✅ Анҷом ёфт | `lib/features/business/`, `lib/models/business_model.dart` |
+| 6 | Product management | ✅ Анҷом ёфт | `lib/features/products/` |
+| 7 | Cart and Orders | ⏳ Дар навбат | `lib/features/cart/`, `lib/features/orders/` |
 | 8 | Chat | ⏳ | `lib/features/chat/` |
 | 9 | Jobs / Employment | ⏳ | `lib/features/jobs/` |
 | 10 | Services | ⏳ | `lib/features/services/` |

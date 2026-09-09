@@ -2,12 +2,13 @@
 
 Мутобиқи banди 24 спецификация. Ин файл дар ҳар PHASE-и нав навсозӣ мешавад.
 
-## Ҳолати ҳозира (PHASE 1–4)
+## Ҳолати ҳозира (PHASE 1–6)
 
 - `firestore.rules`: коллексияи `users` — корбар танҳо документи худро сохта/навишта метавонад; хондан барои ҳар корбари ворид шуда кушода аст (барои профили ҷамъиятӣ дар оянда). Ҳама коллексияи дигар **default-deny** аст, то вақте ки феҷаи дахлдор онро кушояд.
-- `firestore.rules` → `products`: хондан барои ҳама (marketplace бояд бе воридшавӣ ҳам намоён бошад — қарор), навиштан/тағйир/нест кардан танҳо барои `sellerId == auth.uid`.
+- `firestore.rules` → `products`: хондан барои ҳама (marketplace бояд бе воридшавӣ ҳам намоён бошад — қарор), навиштан/тағйир/нест кардан танҳо барои `sellerId == auth.uid` — ин ҳамон қоида барои PHASE 4 (favorite) ва PHASE 6 (add/edit/delete/hide) кор мекунад, тағйир лозим набуд.
 - `firestore.rules` → `favorites`: хондан/навиштан/нест кардан танҳо барои `userId == auth.uid`-и худи документ.
-- `storage.rules`: `profile_photos/{uid}.jpg` — корбар танҳо файли худро бор карда метавонад (маҳдудияти андоза < 5MB, танҳо навъи `image/*`); хондан барои ҳама кушода аст (сурат дар product/chat/review намоён мешавад).
+- `firestore.rules` → `businesses`: documentId = ownerId; хондан кушода (профили ҷамъиятӣ), навиштан танҳо барои `auth.uid == ownerId`; нест кардан бастааст (танҳо тавассути admin panel, PHASE 19).
+- `storage.rules`: `profile_photos/{uid}.jpg`, `business_images/{ownerId}/{logo,cover}.jpg` ва `product_images/{sellerId}/{uuid}.jpg` — ҳар корбар танҳо файли худро бор/нест карда метавонад (маҳдудияти андоза, танҳо навъи `image/*`); хондан барои ҳама кушода аст.
 - API secret/private key дар коди Flutter нест.
 - Google Sign-In credential-ҳо танҳо ба воситаи Firebase SDK коркард мешаванд (client-side secret нест).
 

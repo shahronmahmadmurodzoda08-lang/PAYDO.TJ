@@ -29,6 +29,8 @@ features/<name>/
 
 **Bottom navigation (PHASE 3):** роҳи `/home` ба `RootShell` мебарад — виҷети дохилии он (на go_router-и алоҳида барои ҳар tab) бо `IndexedStack` + `BottomNavigationBar` кор мекунад. Қарор: барои 4 tab-и оддӣ (Home/Search/Map/Profile) `StatefulShellRoute`-и go_router зарурат надошт — `IndexedStack` соддатар аст ва ҳолати ҳар tab-ро нигоҳ медорад (масалан scroll position). Агар дар оянда deep-linking ба tab-и мушаххас лозим шавад (масалан push notification → Chat tab), метавон ба `StatefulShellRoute` гузашт бе тағйири феча-ҳо.
 
+**Business Profile (PHASE 5):** ҳар корбар ҳадди аксар як бизнес дошта метавонад дар MVP — `businesses/{ownerId}` (documentId = uid). Ин соддатар аст барои "оё корбар бизнес дорад?" (як `get`, на query). Агар дар оянда чандин филиал лозим шавад, метавон ба auto-id гузашт бе вайрон кардани UI (зеро ҳама ҷо аз рӯи `businessId` кор мекунад).
+
 ## Firebase
 
 - **Authentication:** Google Sign-In танҳо (PHASE 1). Дигар усулҳо (телефон, email/parol) дар спецификация зикр нашудаанд — илова намешаванд, то аз spec берун набароем.

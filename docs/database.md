@@ -42,7 +42,7 @@
 | createdAt, updatedAt | timestamp | |
 
 **Index-ҳои лозимӣ (PHASE 21 пеш аз release тасдиқ карда шавад):**
-`isHidden + category + createdAt`, `isHidden + city + createdAt`, `isHidden + createdAt`.
+`isHidden + category + createdAt`, `isHidden + city + createdAt`, `isHidden + createdAt`, `sellerId + createdAt` (барои "Маҳсулоти ман", PHASE 6), `businessId + isHidden + createdAt` (барои Business Profile → Products tab).
 
 ### `favorites/{uid}_{itemId}` (PHASE 4)
 
@@ -55,11 +55,26 @@
 
 Қарори тарроҳӣ: docId = `{uid}_{itemId}` (на auto-id), то "toggle" (илова/нест кардан) бе query иловагӣ иҷро шавад — мустақим `favorites/{uid}_{productId}` дастрас аст.
 
+### `businesses/{ownerId}` (PHASE 5)
+
+| Майдон | Навъ | Тавзеҳ |
+|---|---|---|
+| ownerId | string | = documentId, = Firebase Auth uid |
+| businessName, description | string | |
+| logoUrl, coverImageUrl | string? | Storage: `business_images/{ownerId}/logo.jpg` / `cover.jpg` |
+| phone, whatsapp, instagramUrl | string? | |
+| city, address | string | |
+| location | geopoint? | PHASE 13 |
+| deliveryAvailable | bool | |
+| workingHours | string? | озод-матн, масалан "9:00 - 20:00" |
+| rating, reviewsCount | number/int | PHASE 16 навсозӣ мекунад |
+| isVerified | bool | admin verify, PHASE 19 |
+| createdAt, updatedAt | timestamp | |
+
 ## Феҳристи коллексияҳои банақшагирифташуда (аз спецификация, банди 27)
 
 Ин рӯйхат дар `lib/core/constants/firestore_paths.dart` аллакай ҳамчун constant мавҷуд аст (то ном дар кодбоза дучандиягӣ надошта бошад), вале худи схема дар марҳилаи феҷаи дахлдор муайян карда мешавад:
 
-- `businesses` — PHASE 5
 - `categories` — placeholder (ҳоло `ProductCategories` static, PHASE 19 динамикӣ мешавад)
 - `orders`, `order_items` — PHASE 7
 - `chats`, `messages` — PHASE 8
