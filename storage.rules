@@ -37,6 +37,21 @@ service firebase.storage {
       allow delete: if request.auth != null && request.auth.uid == sellerId;
     }
 
+    // Сурати чат (PHASE 8): зерфайли chatId. МУВАҚҚАТӢ: танҳо
+    // authentication санҷида мешавад (на аъзогии воқеии чат), зеро
+    // санҷиши cross-service (Storage rules → Firestore.get) синтаксиси
+    // нисбатан нав ва камтар устувор дорад — беэътимодтар аз хатои
+    // rule-и нодуруст дар ин марҳила. Дар PHASE 20 (Security) бо
+    // санҳиши пурраи иштирокчиён (тавассути Cloud Function ё
+    // firestore.get дар Storage rules, пас аз санҳиши дастӣ дар
+    // Firebase Console) мустаҳкам карда мешавад.
+    match /chat_images/{chatId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }
