@@ -105,13 +105,25 @@
 | timestamp | timestamp | |
 | isRead | bool | (соддакардашуда — ҳисоб дар сатҳи chat, на паём, ниг. `unreadCounts`) |
 
+### `jobs/{jobId}`, `worker_profiles/{uid}`, `job_applications/{jobId}_{workerId}` (PHASE 9)
+
+| Коллексия | documentId | Тавзеҳ |
+|---|---|---|
+| `jobs` | auto-id | вакансия аз корфармо; `employerId` барои Security Rules |
+| `worker_profiles` | `uid` | ҳамон нақшаи `businesses/{ownerId}` — як профил барои ҳар корбар |
+| `job_applications` | `{jobId}_{workerId}` | детерминистӣ — пешгирии аризаи такрорӣ ба ҳамон вакансия |
+
+`worker_profiles.isVisible=false` танҳо дар client-side query филтр мешавад (профил боз ҳам мустақим хонда мешавад бо ID — ниг. эзоҳ дар `firestore.rules`); ин барои MVP кофист, вале дар PHASE 20 мулоҳиза мешавад.
+
+### `services/{uid}`, `service_orders/{orderId}` (PHASE 10)
+
+Ҳамон нақшаи `worker_profiles`/`jobs` — `services` documentId=uid (як профил барои ҳар корбар), `service_orders` auto-id бо `customerId`/`providerId` барои Security Rules. `ServiceOrderStatus` соддатар аз `OrderStatus`-и marketplace (pending/accepted/completed/cancelled, на 8 ҳолат) — хизматрасонӣ pipeline-и логистикӣ (shipped/delivering) надорад.
+
 ## Феҳристи коллексияҳои банақшагирифташуда (аз спецификация, банди 27)
 
 Ин рӯйхат дар `lib/core/constants/firestore_paths.dart` аллакай ҳамчун constant мавҷуд аст (то ном дар кодбоза дучандиягӣ надошта бошад), вале худи схема дар марҳилаи феҷаи дахлдор муайян карда мешавад:
 
 - `categories` — placeholder (ҳоло `ProductCategories` static, PHASE 19 динамикӣ мешавад)
-- `jobs`, `job_applications` — PHASE 9
-- `services`, `service_orders` — PHASE 10
 - `accounting`, `debts`, `inventory`, `sales`, `expenses` — PHASE 11
 - `deliveries`, `couriers` — PHASE 12
 - `reviews` — PHASE 16

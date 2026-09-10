@@ -35,6 +35,10 @@ features/<name>/
 
 **Chat (PHASE 8):** `chatId` детерминистӣ (`{uid1}_{uid2}`, sorted) — ниг. эзоҳи муфассал дар `lib/features/chat/domain/chat_repository.dart`. Ин пешгирии дучандии чат байни ҳамон ду нафар мекунад ва "чат ҳаст ё не" бе query иҷро мешавад. Chat феҳа мустақил аст (на зерфеҳаи marketplace/business/jobs), зеро як гуфтугӯ метавонад аз феҳаҳои гуногун (product/business/job/service) сар шавад — бинобар ин майдонҳои ихтиёрии `contextType`/`contextId`/`contextTitle` истифода мешаванд, на 4 феҳаи алоҳидаи чат.
 
+**Jobs (PHASE 9):** `worker_profiles/{uid}` ҳамон нақшаи `businesses/{ownerId}` (PHASE 5) — як профил барои ҳар корбар, documentId=uid. `job_applications` docId детерминистӣ (`{jobId}_{workerId}`) — ҳамон мантиқи `favorites`/`chats`: пешгирии сабти такрорӣ бе query иловагӣ. Employer↔Worker ва Employer↔Applicant chat аз феҳаи умумии Chat (PHASE 8) истифода мешавад — коди чат такрор нашуд.
+
+**Services (PHASE 10):** ҳамон 3 нақшаи такроршавандаи "profile-per-user" (business/worker/service — documentId=uid) идома ёфт. `accountType` барои хизматрасон дар спецификатсия алоҳида зикр нашудааст (banди 6: танҳо user/business/worker/employer/courier/admin) — бинобар ин `AccountType.business` истифода мешавад (қарор сабтшуда дар коди `provider_profile_form_screen.dart`). `ServiceOrderModel` бо `OrderModel`-и marketplace якхела нест — pipeline-и соддатар (4 ҳолат, на 8), зеро хизматрасонӣ delivery/inventory надорад.
+
 ## Firebase
 
 - **Authentication:** Google Sign-In танҳо (PHASE 1). Дигар усулҳо (телефон, email/parol) дар спецификация зикр нашудаанд — илова намешаванд, то аз spec берун набароем.
