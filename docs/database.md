@@ -119,12 +119,21 @@
 
 Ҳамон нақшаи `worker_profiles`/`jobs` — `services` documentId=uid (як профил барои ҳар корбар), `service_orders` auto-id бо `customerId`/`providerId` барои Security Rules. `ServiceOrderStatus` соддатар аз `OrderStatus`-и marketplace (pending/accepted/completed/cancelled, на 8 ҳолат) — хизматрасонӣ pipeline-и логистикӣ (shipped/delivering) надорад.
 
+### `debts/{debtId}`, `expenses/{expenseId}` (PHASE 11)
+
+| Коллексия | Майдонҳои калидӣ | Тавзеҳ |
+|---|---|---|
+| `debts` | ownerId, customerName, phone, amount, paid, date, notes | `remaining` = amount − paid (ҳисоб дар client, на дар Firestore) |
+| `expenses` | ownerId, title, amount, date, notes | |
+
+**МУҲИМ (қарори тарроҳӣ):** `sales` ва `inventory` (номбаршуда дар banди 27) ҳамчун коллексияи алоҳида **сохта НАШУДАНД**. Сабаб: `orders` (PHASE 7, status=completed) аллакай ҳамаи маълумоти "фурӯш"-ро дорад, ва `products` (PHASE 6, бо майдони нави `purchasePrice`) аллакай ҳамаи маълумоти "inventory"-ро дорад. Сохтани коллексияи дуввум маънои ду манбаи ҳақиқат ва хатари desync-ро дошт — мустақим хилофи talab-и худи banди 27 ("Avoid unnecessary duplication"). Dashboard (`AccountingDashboardScreen`) статистикаро бевосита аз `sellerOrdersProvider` (Orders) ва `myProductsProvider` (Products) ҳисоб мекунад. Ниг. эзоҳи муфассал дар `lib/features/accounting/domain/accounting_repository.dart`.
+
 ## Феҳристи коллексияҳои банақшагирифташуда (аз спецификация, банди 27)
 
 Ин рӯйхат дар `lib/core/constants/firestore_paths.dart` аллакай ҳамчун constant мавҷуд аст (то ном дар кодбоза дучандиягӣ надошта бошад), вале худи схема дар марҳилаи феҷаи дахлдор муайян карда мешавад:
 
 - `categories` — placeholder (ҳоло `ProductCategories` static, PHASE 19 динамикӣ мешавад)
-- `accounting`, `debts`, `inventory`, `sales`, `expenses` — PHASE 11
+- `accounting` — истифода намешавад (dashboard бевосита аз orders/products ҳисоб мешавад, ниг. боло); `sales`, `inventory` низ сохта нашудаанд, ҳамон сабаб
 - `deliveries`, `couriers` — PHASE 12
 - `reviews` — PHASE 16
 - `notifications` — PHASE 15

@@ -16,7 +16,7 @@
 | 8 | Chat | ✅ Анҷом ёфт | `lib/features/chat/`, `lib/models/chat_model.dart` |
 | 9 | Jobs / Employment | ✅ Анҷом ёфт | `lib/features/jobs/`, `lib/models/vacancy_model.dart`, `worker_profile_model.dart`, `job_application_model.dart` |
 | 10 | Services | ✅ Анҷом ёфт | `lib/features/services/`, `lib/models/service_provider_model.dart`, `service_order_model.dart` |
-| 11 | Accounting / Дафтари ҳисоб | ⏳ | `lib/features/accounting/` |
+| 11 | Accounting / Дафтари ҳисоб | ✅ Анҷом ёфт | `lib/features/accounting/`, `lib/models/debt_model.dart`, `expense_model.dart` |
 | 12 | Delivery | ⏳ | `lib/features/delivery/` |
 | 13 | Map of Tajikistan | ⏳ | `lib/features/maps/` |
 | 14 | Live Delivery Tracking | ⏳ | `lib/features/delivery/`, `lib/features/maps/` |

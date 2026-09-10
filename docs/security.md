@@ -2,7 +2,7 @@
 
 Мутобиқи banди 24 спецификация. Ин файл дар ҳар PHASE-и нав навсозӣ мешавад.
 
-## Ҳолати ҳозира (PHASE 1–10)
+## Ҳолати ҳозира (PHASE 1–11)
 
 - `firestore.rules`: коллексияи `users` — корбар танҳо документи худро сохта/навишта метавонад; хондан барои ҳар корбари ворид шуда кушода аст (барои профили ҷамъиятӣ дар оянда). Ҳама коллексияи дигар **default-deny** аст, то вақте ки феҷаи дахлдор онро кушояд.
 - `firestore.rules` → `products`: хондан барои ҳама (marketplace бояд бе воридшавӣ ҳам намоён бошад — қарор), навиштан/тағйир/нест кардан танҳо барои `sellerId == auth.uid`.
@@ -15,6 +15,7 @@
 - `firestore.rules` → `job_applications`: хондан барои корҷӳ ё корфармои дахлдор; сохтан танҳо аз номи корҷӳ; тағйир (қабул/рад) танҳо барои корфармо.
 - `firestore.rules` → `services`: documentId = uid; хондан кушода (мисли worker_profiles), навиштан танҳо барои соҳиб.
 - `firestore.rules` → `service_orders`: хондан/тағйир барои харидор ё хизматрасони дахлдор; сохтан танҳо аз номи харидор.
+- `firestore.rules` → `debts`/`expenses`: пурра хусусӣ — танҳо `ownerId == auth.uid`.
 - `storage.rules`: `profile_photos/{uid}.jpg`, `business_images/{ownerId}/{logo,cover}.jpg`, `product_images/{sellerId}/{uuid}.jpg` — ҳар корбар танҳо файли худро бор/нест карда метавонад. `chat_images/{chatId}/{uuid}.jpg` — **МУВАҚҚАТӢ** танҳо authentication санҷида мешавад (ниг. эзоҳ дар `storage.rules`, мустаҳкамкунӣ дар PHASE 20). Хондан барои ҳама кушода аст (ба ҷуз chat).
 - API secret/private key дар коди Flutter нест.
 - Google Sign-In credential-ҳо танҳо ба воситаи Firebase SDK коркард мешаванд (client-side secret нест).

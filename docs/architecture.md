@@ -39,6 +39,8 @@ features/<name>/
 
 **Services (PHASE 10):** ҳамон 3 нақшаи такроршавандаи "profile-per-user" (business/worker/service — documentId=uid) идома ёфт. `accountType` барои хизматрасон дар спецификатсия алоҳида зикр нашудааст (banди 6: танҳо user/business/worker/employer/courier/admin) — бинобар ин `AccountType.business` истифода мешавад (қарор сабтшуда дар коди `provider_profile_form_screen.dart`). `ServiceOrderModel` бо `OrderModel`-и marketplace якхела нест — pipeline-и соддатар (4 ҳолат, на 8), зеро хизматрасонӣ delivery/inventory надорад.
 
+**Accounting (PHASE 11):** `sales` ва `inventory` (banди 27) қасдан ба сифати коллексияи алоҳида сохта НАШУДАНД — dashboard бевосита аз `orders` (PHASE 7) ва `products` (PHASE 6, бо майдони нави `purchasePrice`) ҳисоб мекунад, то ду манбаи ҳақиқат ва хатари desync пайдо нашавад. Ниг. тавзеҳи пурра дар `docs/database.md` ва эзоҳи код дар `lib/features/accounting/domain/accounting_repository.dart`. `debts`/`expenses` бошанд коллексияҳои воқеӣ ҳастанд, зеро маълумоти комилан нав (на дучандшуда аз феҳаи дигар).
+
 ## Firebase
 
 - **Authentication:** Google Sign-In танҳо (PHASE 1). Дигар усулҳо (телефон, email/parol) дар спецификация зикр нашудаанд — илова намешаванд, то аз spec берун набароем.
