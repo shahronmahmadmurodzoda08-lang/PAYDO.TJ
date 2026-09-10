@@ -92,6 +92,67 @@ service cloud.firestore {
       }
     }
 
+    // Вакансия (PHASE 9): хондан кушода, навиштан/тағйир/нест кардан
+    // танҳо барои соҳиби вакансия (employerId).
+    match /jobs/{jobId} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.resource.data.employerId == request.auth.uid;
+      allow update, delete: if request.auth != null
+                    && resource.data.employerId == request.auth.uid;
+    }
+
+    // Профили корҷӳ (PHASE 9): documentId = uid, ҳамон нақшаи
+    // businesses/{ownerId}. Хондан кушода (барои ҳамон корфармоён
+    // рӳйхати "Корҷӳён"-ро бинанд, ба ҷуз агар isVisible=false бошад —
+    // он дар сатҳи client filter мешавад, на дар rules, зеро rules
+    // намедонанд "ин query аз рӳи isVisible аст" бе санҳиши иловагӣ).
+    match /worker_profiles/{uid} {
+      allow read: if true;
+      allow create, update: if request.auth != null
+                    && request.auth.uid == uid
+                    && request.resource.data.uid == uid;
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Аризаи корҷӳ (PHASE 9): docId = `{jobId}_{workerId}`. Хондан:
+    // худи корҷӳ ё корфармои вакансия. Сохтан: танҳо корҷӳ аз номи худ.
+    // Тағйир (қабул/рад): танҳо корфармо.
+    match /job_applications/{applicationId} {
+      allow read: if request.auth != null
+                  && (resource.data.workerId == request.auth.uid
+                      || resource.data.employerId == request.auth.uid);
+      allow create: if request.auth != null
+                    && request.resource.data.workerId == request.auth.uid;
+      allow update: if request.auth != null
+                    && resource.data.employerId == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // Профили хизматрасон (PHASE 10): documentId = uid, ҳамон нақшаи
+    // worker_profiles/businesses.
+    match /services/{uid} {
+      allow read: if true;
+      allow create, update: if request.auth != null
+                    && request.auth.uid == uid
+                    && request.resource.data.uid == uid;
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Фармоиши хизматрасонӣ (PHASE 10): хондан/тағйир барои харидор ё
+    // хизматрасони дахлдор; сохтан танҳо аз номи худи харидор.
+    match /service_orders/{orderId} {
+      allow read: if request.auth != null
+                  && (resource.data.customerId == request.auth.uid
+                      || resource.data.providerId == request.auth.uid);
+      allow create: if request.auth != null
+                    && request.resource.data.customerId == request.auth.uid;
+      allow update: if request.auth != null
+                    && (resource.data.customerId == request.auth.uid
+                        || resource.data.providerId == request.auth.uid);
+      allow delete: if false;
+    }
+
     // Ҳама коллексияҳои дигар то муайян шуданашон дар марҳилаҳои
     // дахлдор пурра баста мебошанд (default deny).
     match /{document=**} {

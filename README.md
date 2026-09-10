@@ -17,7 +17,9 @@ Super App / marketplace-и бисёрфунксионалӣ барои Тоҷи�
 | 6 | Product Management | ✅ Анҷом ёфт |
 | 7 | Cart and Orders | ✅ Анҷом ёфт |
 | 8 | Chat | ✅ Анҷом ёфт |
-| 9–25 | ... | ⏳ Дар навбат |
+| 9 | Jobs / Employment | ✅ Анҷом ёфт |
+| 10 | Services | ✅ Анҷом ёфт |
+| 11–25 | ... | ⏳ Дар навбат |
 
 Ниг. [`docs/roadmap.md`](docs/roadmap.md) барои феҳристи пурраи марҳилаҳо.
 
