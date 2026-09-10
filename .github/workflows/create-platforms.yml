@@ -1,64 +1,57 @@
-name: Create Flutter Platforms
+name: PAYDO TJ - Create All Platforms
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 permissions:
   contents: write
 
 jobs:
   create-platforms:
+    name: Create Android iOS Windows Web Linux
     runs-on: ubuntu-latest
 
     steps:
-      - name: Гирифтани репозиторий
-        uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Насби Flutter SDK
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          cache: true
 
-      - name: flutter doctor
-        run: flutter doctor -v
+      - name: Flutter version
+        run: flutter --version
 
-      - name: Сохтани ҳамаи платформаҳо
-        run: flutter create --platforms=android,ios,web,linux,macos,windows --project-name chatapp .
-
-      - name: Танзими minSdk=23 барои Android (лозим барои Firebase)
+      - name: Create all platform files
         run: |
-          if [ -f android/app/build.gradle.kts ]; then
-            sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 23/' android/app/build.gradle.kts
-          elif [ -f android/app/build.gradle ]; then
-            sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 23/' android/app/build.gradle
-          fi
+          flutter create \
+            --platforms=android,ios,windows,web,linux \
+            --project-name=paydo_tj \
+            --overwrite .
 
-      - name: Санҷиши мавҷудияти платформаҳо (дар диск)
-        run: |
-          test -d android && echo "ANDROID OK (created on disk)" || echo "ANDROID MISSING"
-          test -d ios && echo "IOS OK (created on disk)" || echo "IOS MISSING"
-          test -d web && echo "WEB OK (created on disk)" || echo "WEB MISSING"
-          test -d linux && echo "LINUX OK (created on disk)" || echo "LINUX MISSING"
-          test -d macos && echo "MACOS OK (created on disk)" || echo "MACOS MISSING"
-          test -d windows && echo "WINDOWS OK (created on disk)" || echo "WINDOWS MISSING"
+      - name: Get dependencies
+        run: flutter pub get
 
-      - name: Санҷиши .gitignore (ташхис)
-        run: |
-          echo "--- Мундариҷаи .gitignore ---"
-          cat .gitignore || echo "(файл нест)"
-          echo "--- git status пеш аз add ---"
-          git status --short
+      - name: Check project
+        run: flutter analyze
 
-      - name: Сабт ва фиристодан (force-add, бе lib/ ва pubspec.yaml)
+      - name: Save platform files
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f android ios web linux macos windows
-          echo "--- Файлҳои stage-шуда ---"
-          git diff --cached --stat
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add android ios windows web linux
+
           if git diff --cached --quiet; then
-            echo "Ҳеҷ тағйирот нест — платформаҳо аллакай мавҷуданд ё Flutter натавонист онҳоро созад."
+            echo "No platform changes."
           else
-            git commit -m "chore: generate all Flutter platform folders (force-added, ignoring .gitignore)"
+            git commit -m "Create PAYDO TJ platform files"
             git push
           fi
