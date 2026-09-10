@@ -153,6 +153,25 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // Дафтари ҳисоб (PHASE 11): маълумоти пурра хусусӣ — танҳо соҳиб
+    // (ownerId == auth.uid) метавонад хонад/нависад. Sales/Inventory
+    // алоҳида нестанд (ниг. эзоҳи тарроҳӣ дар
+    // lib/features/accounting/domain/accounting_repository.dart) —
+    // онҳо аз products/orders (rules-и аллакай мавҷуда) истифода мешаванд.
+    match /debts/{debtId} {
+      allow read, update, delete: if request.auth != null
+                    && resource.data.ownerId == request.auth.uid;
+      allow create: if request.auth != null
+                    && request.resource.data.ownerId == request.auth.uid;
+    }
+
+    match /expenses/{expenseId} {
+      allow read, delete: if request.auth != null
+                    && resource.data.ownerId == request.auth.uid;
+      allow create: if request.auth != null
+                    && request.resource.data.ownerId == request.auth.uid;
+    }
+
     // Ҳама коллексияҳои дигар то муайян шуданашон дар марҳилаҳои
     // дахлдор пурра баста мебошанд (default deny).
     match /{document=**} {
