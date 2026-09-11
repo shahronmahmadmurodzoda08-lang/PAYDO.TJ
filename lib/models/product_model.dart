@@ -11,6 +11,7 @@ class ProductModel {
   final String name;
   final String description;
   final double price;
+  final double? purchasePrice; // нархи харид (PHASE 11: Дафтари ҳисоб — фоида)
   final double? oldPrice;
   final int? discount; // фоиз, масалан 20 = 20%
   final List<String> images;
@@ -32,6 +33,7 @@ class ProductModel {
     required this.name,
     required this.description,
     required this.price,
+    this.purchasePrice,
     this.oldPrice,
     this.discount,
     this.images = const [],
@@ -51,6 +53,10 @@ class ProductModel {
   String get primaryImage => images.isNotEmpty ? images.first : '';
   bool get hasDiscount => oldPrice != null && oldPrice! > price;
 
+  /// Фоида барои як дона (PHASE 11: Дафтари ҳисоб). null агар
+  /// нархи харид ворид карда нашуда бошад.
+  double? get profitPerUnit => purchasePrice != null ? price - purchasePrice! : null;
+
   factory ProductModel.fromMap(String id, Map<String, dynamic> map) {
     return ProductModel(
       id: id,
@@ -59,6 +65,7 @@ class ProductModel {
       name: map['name'] as String? ?? '',
       description: map['description'] as String? ?? '',
       price: (map['price'] as num?)?.toDouble() ?? 0,
+      purchasePrice: (map['purchasePrice'] as num?)?.toDouble(),
       oldPrice: (map['oldPrice'] as num?)?.toDouble(),
       discount: map['discount'] as int?,
       images: (map['images'] as List?)?.map((e) => e as String).toList() ??
@@ -83,6 +90,7 @@ class ProductModel {
       'name': name,
       'description': description,
       'price': price,
+      'purchasePrice': purchasePrice,
       'oldPrice': oldPrice,
       'discount': discount,
       'images': images,
