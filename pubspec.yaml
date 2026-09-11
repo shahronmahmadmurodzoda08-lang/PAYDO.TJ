@@ -53,6 +53,7 @@ dev_dependencies:
   freezed: ^2.5.7
   json_serializable: ^6.8.0
   riverpod_generator: ^2.4.3
+  flutter_launcher_icons: ^0.14.1
 
 flutter:
   uses-material-design: true
@@ -67,3 +68,22 @@ flutter:
   #       - asset: assets/fonts/Inter-Regular.ttf
   #       - asset: assets/fonts/Inter-Bold.ttf
   #         weight: 700
+
+# Иконкаи барнома (PHASE: post-12, дархости корбар) — аз ҳамин як
+# файли лого барои Android/iOS/Web худкор сохта мешавад.
+# Фармон: flutter pub run flutter_launcher_icons
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/app_icon.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/icons/app_icon.png"
+    background_color: "#0A0E27"
+    theme_color: "#12B76A"
+  windows:
+    generate: false
+  macos:
+    generate: false

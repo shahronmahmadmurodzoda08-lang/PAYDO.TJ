@@ -172,6 +172,39 @@ service cloud.firestore {
                     && request.resource.data.ownerId == request.auth.uid;
     }
 
+    // Профили courier (PHASE 12): documentId = uid. Хондан кушода
+    // (Business бояд рӯйхати courier-ҳои озодро бинад), навиштан танҳо
+    // барои соҳиб. Диққат: setCourierStatus (busy/available) низ аз
+    // ҳамин "update" истифода мешавад — ҳам аз тарафи courier (худаш
+    // status иваз мекунад) ва ҳам аз тарафи система ҳангоми таъин
+    // шудан/расонидан (ниг. DeliveryActionController). Барои
+    // соддагии MVP, "update" барои соҳиб кушода аст; санҷиши "танҳо
+    // системаро иҷозат деҳ вақте расонида шуд" дар PHASE 20 иловатар
+    // мешавад агар лозим шавад.
+    match /couriers/{uid} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null
+                    && request.auth.uid == uid
+                    && request.resource.data.uid == uid;
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Иҷрои доставка (PHASE 12): docId = orderId. Хондан/тағйир барои
+    // courier-и таъиншуда ё харидори order (мустақим аз resource.data,
+    // на аз orders/{orderId}, то rule-и Storage-барин cross-collection
+    // мураккаб нашавад). Сохтан: ин ҷо санҷиши "фиристанда seller аст"
+    // намекунем (маҳдудияти MVP — ниг. эзоҳи боло), вале customerId/
+    // courierId бояд аз request.resource бошад.
+    match /deliveries/{deliveryId} {
+      allow read: if request.auth != null
+                  && (request.auth.uid == resource.data.courierId
+                      || request.auth.uid == resource.data.customerId);
+      allow create: if request.auth != null;
+      allow update: if request.auth != null
+                  && request.auth.uid == resource.data.courierId;
+      allow delete: if false;
+    }
+
     // Ҳама коллексияҳои дигар то муайян шуданашон дар марҳилаҳои
     // дахлдор пурра баста мебошанд (default deny).
     match /{document=**} {

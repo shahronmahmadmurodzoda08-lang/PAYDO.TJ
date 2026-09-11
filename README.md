@@ -20,7 +20,8 @@ Super App / marketplace-и бисёрфунксионалӣ барои Тоҷи�
 | 9 | Jobs / Employment | ✅ Анҷом ёфт |
 | 10 | Services | ✅ Анҷом ёфт |
 | 11 | Accounting / Дафтари ҳисоб | ✅ Анҷом ёфт |
-| 12–25 | ... | ⏳ Дар навбат |
+| 12 | Delivery | ✅ Анҷом ёфт |
+| 13–25 | ... | ⏳ Дар навбат |
 
 Ниг. [`docs/roadmap.md`](docs/roadmap.md) барои феҳристи пурраи марҳилаҳо.
 
@@ -50,6 +51,17 @@ lib/
 ```
 
 Ниг. [`docs/architecture.md`](docs/architecture.md) барои тавзеҳи муфассал.
+
+## CI/CD — Build ва Test худкор
+
+Лоиҳа акнун **GitHub Actions** дорад:
+
+- `.github/workflows/ci.yml` — дар ҳар push/PR: `flutter analyze` + `flutter test` (бе ниёз ба танзими иловагӣ)
+- `.github/workflows/build.yml` — сохтани **APK**, **AAB** (Play Store), **Web**, ва **iOS** (бе имзо), дастӣ ё бо tag-и `v*`
+
+Иконкаи барнома (APK/iOS/Web) аз `assets/icons/app_icon.png` (лого-и PAYDO.TJ) худкор бо `flutter_launcher_icons` сохта мешавад.
+
+**Қадами якум пеш аз build:** 2 GitHub Secret (Firebase config) танзим кунед — дастури пурра дар [`docs/ci_cd.md`](docs/ci_cd.md).
 
 ## Роҳандозии лоиҳа дар маҳали худ
 
@@ -102,5 +114,7 @@ firebase deploy --only firestore:rules,storage
 
 ## Муҳими корӣ
 
-- Ин лоиҳа дар ин муҳити разговор (sandbox) **бе Flutter SDK ва бе интернет** сохта шудааст — коди Dart дар ин ҷо навишта шуда, вале **compile нашудааст**. Пеш аз баровардани APK ҳатман `flutter pub get` → `flutter analyze` → `flutter test` дар маҳали худ иҷро кунед ва хатогиҳои эҳтимолиро гузориш диҳед, то дар марҳилаи навбатӣ ислоҳ карда шаванд.
+- Ин лоиҳа дар ин муҳити разговор (sandbox) **бе Flutter SDK ва бе интернет** сохта шудааст — коди Dart дар ин ҷо навишта шуда, вале **compile нашудааст**. Ду роҳ барои санҷиш:
+  1. **Маҳали худ:** `flutter pub get` → `flutter analyze` → `flutter test` → `flutter run`.
+  2. **GitHub Actions (тавсия дода мешавад):** push кунед ба GitHub — `ci.yml` худкор analyze/test мекунад, `build.yml` бошад APK/AAB/Web/iOS месозад (пас аз танзими 2 secret). Ниг. [`docs/ci_cd.md`](docs/ci_cd.md).
 - Ҳар марҳила (PHASE) бояд пеш аз гузаштан ба навбатӣ бо `flutter analyze`/`flutter test` тасдиқ карда шавад (ниг. `docs/roadmap.md`).
