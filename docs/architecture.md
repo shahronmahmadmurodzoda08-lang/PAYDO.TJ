@@ -41,6 +41,8 @@ features/<name>/
 
 **Accounting (PHASE 11):** `sales` ва `inventory` (banди 27) қасдан ба сифати коллексияи алоҳида сохта НАШУДАНД — dashboard бевосита аз `orders` (PHASE 7) ва `products` (PHASE 6, бо майдони нави `purchasePrice`) ҳисоб мекунад, то ду манбаи ҳақиқат ва хатари desync пайдо нашавад. Ниг. тавзеҳи пурра дар `docs/database.md` ва эзоҳи код дар `lib/features/accounting/domain/accounting_repository.dart`. `debts`/`expenses` бошанд коллексияҳои воқеӣ ҳастанд, зеро маълумоти комилан нав (на дучандшуда аз феҳаи дигар).
 
+**Delivery (PHASE 12):** `DeliveryStatus` (курьер-марказӣ) аз `OrderStatus` (тиҷорат-марказӣ, PHASE 7) қасдан ҷудо нигоҳ дошта шуд — ду concern-и гуногун. Композитсияи байни онҳо (масалан таъини courier → order.status='shipped'; delivered → order.status='completed' + courier → 'available') дар сатҳи `DeliveryActionController` (presentation layer, ниг. `lib/features/delivery/presentation/delivery_providers.dart`) анҷом дода мешавад — на дар дохили худи `DeliveryRepository`/`OrderRepository` (то ин ду repository ба ҳамдигар вобаста набошанд, coupling-и кам дар data layer).
+
 ## Firebase
 
 - **Authentication:** Google Sign-In танҳо (PHASE 1). Дигар усулҳо (телефон, email/parol) дар спецификация зикр нашудаанд — илова намешаванд, то аз spec берун набароем.

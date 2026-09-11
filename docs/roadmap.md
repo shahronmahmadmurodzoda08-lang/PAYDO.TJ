@@ -17,7 +17,7 @@
 | 9 | Jobs / Employment | ✅ Анҷом ёфт | `lib/features/jobs/`, `lib/models/vacancy_model.dart`, `worker_profile_model.dart`, `job_application_model.dart` |
 | 10 | Services | ✅ Анҷом ёфт | `lib/features/services/`, `lib/models/service_provider_model.dart`, `service_order_model.dart` |
 | 11 | Accounting / Дафтари ҳисоб | ✅ Анҷом ёфт | `lib/features/accounting/`, `lib/models/debt_model.dart`, `expense_model.dart` |
-| 12 | Delivery | ⏳ | `lib/features/delivery/` |
+| 12 | Delivery | ✅ Анҷом ёфт | `lib/features/delivery/`, `lib/models/courier_model.dart`, `delivery_model.dart` |
 | 13 | Map of Tajikistan | ⏳ | `lib/features/maps/` |
 | 14 | Live Delivery Tracking | ⏳ | `lib/features/delivery/`, `lib/features/maps/` |
 | 15 | Notifications | ⏳ | `lib/features/notifications/` |
@@ -37,3 +37,11 @@
 AI assistant, AI product search, AI job matching, online payments, wallet, loyalty, coupons, QR codes, advanced analytics, subscription, multi-language, multi-currency, advanced delivery routing, push campaigns, promoted listings, video products, live commerce.
 
 Architecture (feature-based + Riverpod + Clean Architecture) тавре сохта шудааст, ки ин функсияҳоро дар оянда бе аз нав навиштани лоиҳа илова кардан мумкин бошад.
+
+## Иловаи берун аз тартиб: App Icon + CI/CD (дархости корбар, пас аз PHASE 12)
+
+Мутобиқи дархости мустақими корбар (на банди спецификатсия), пеш аз идомаи PHASE 13:
+
+- **App Icon:** лого-и расмии PAYDO.TJ (`assets/icons/app_icon.png`) илова шуд; `flutter_launcher_icons` конфигуратсия шуд, то иконкаи Android/iOS/Web худкор аз ҳамин файл сохта шавад (`dart run flutter_launcher_icons`).
+- **CI/CD:** `.github/workflows/ci.yml` (analyze+test дар ҳар push/PR) ва `.github/workflows/build.yml` (APK/AAB/Web/iOS, дастӣ ё бо git tag). Тавзеҳи пурра: `docs/ci_cd.md`.
+- Сабаби ин иловаи "берун аз тартиб": корбар мехост натиҷаи build-и воқеиро бинад, ки дар муҳити sandbox-и ин чат имконнопазир аст (набудани Flutter SDK/интернет) — GitHub Actions ҳалли табиист, зеро он ба банди 33 ("Do not invent successful build/test results") хилоф намеравад: build воқеан дар GitHub иҷро мешавад, на "тасаввур" карда мешавад.
