@@ -1,210 +1,176 @@
-name: PAYDO TJ - Build All Platforms
+name: Build — Android / Web / iOS
+
+# Ин workflow-ро дастӣ аз таби "Actions" → "Build — Android / Web / iOS" →
+# "Run workflow" оғоз кунед, ё бо push кардани tag-и "v*" (масалан v0.1.0).
+#
+# ПЕШНИЁЗ (як бор дар GitHub Settings → Secrets and variables → Actions):
+#   FIREBASE_GOOGLE_SERVICES_JSON   — base64-и android/app/google-services.json
+#   FIREBASE_IOS_PLIST              — base64-и ios/Runner/GoogleService-Info.plist (агар iOS лозим бошад)
+#
+# Тавзеҳи пурра: docs/ci_cd.md
 
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
 
 jobs:
-
-  # ==========================
-  # ANDROID
-  # ==========================
-  android:
-    name: Android APK
+  # ==========================================================
+  # ANDROID — APK (санҷиш/тарқим бе Play Store) + AAB (Play Store)
+  # ==========================================================
+  build-android:
+    name: Android (APK + AAB)
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
 
-      - name: Create Android platform
-        run: flutter create --platforms=android --project-name=paydo_tj .
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-      - name: Get dependencies
+      - name: Санҷиши мавҷудияти google-services.json (secret)
+        run: |
+          if [ -z "${{ secrets.FIREBASE_GOOGLE_SERVICES_JSON }}" ]; then
+            echo "❌ Secret FIREBASE_GOOGLE_SERVICES_JSON холист."
+            echo "   Firebase Console → Project Settings → шумо файли"
+            echo "   google-services.json-ро зеркашӣ карда, base64 карда,"
+            echo "   ҳамчун secret бо ҳамин ном илова кунед (ниг. docs/ci_cd.md)."
+            exit 1
+          fi
+
+      - name: Тайёр кардани сохтори native Android (агар набошад)
+        run: |
+          if [ ! -d "android" ]; then
+            echo "android/ мавҷуд нест — бо 'flutter create' сохта мешавад..."
+            flutter create . --platforms=android --org tj.paydo --project-name paydo_tj
+          else
+            echo "android/ аллакай мавҷуд аст."
+          fi
+
+      - name: Ҷойгиркунии google-services.json аз secret
+        run: |
+          mkdir -p android/app
+          echo "${{ secrets.FIREBASE_GOOGLE_SERVICES_JSON }}" | base64 --decode > android/app/google-services.json
+
+      - name: Install dependencies
         run: flutter pub get
 
-      - name: Analyze
-        run: flutter analyze
+      - name: Сохтани иконкаи APK аз лого
+        run: dart run flutter_launcher_icons
 
-      - name: Build APK
+      - name: flutter analyze
+        run: flutter analyze --fatal-infos
+
+      - name: flutter test
+        run: flutter test
+
+      - name: Build APK (release)
         run: flutter build apk --release
 
-      - name: Upload APK
+      - name: Build App Bundle — AAB (барои Play Store)
+        run: flutter build appbundle --release
+
+      - name: Бор кардани APK
         uses: actions/upload-artifact@v4
         with:
-          name: PAYDO-TJ-Android-APK
+          name: paydo-tj-android-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
 
-
-  # ==========================
-  # WINDOWS
-  # ==========================
-  windows:
-    name: Windows
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Create Windows platform
-        run: flutter create --platforms=windows --project-name=paydo_tj .
-
-      - name: Get dependencies
-        run: flutter pub get
-
-      - name: Analyze
-        run: flutter analyze
-
-      - name: Build Windows
-        run: flutter build windows --release
-
-      - name: Create ZIP
-        shell: powershell
-        run: |
-          Compress-Archive `
-            -Path "build\windows\x64\runner\Release\*" `
-            -DestinationPath "PAYDO-TJ-Windows.zip"
-
-      - name: Upload Windows
+      - name: Бор кардани AAB
         uses: actions/upload-artifact@v4
         with:
-          name: PAYDO-TJ-Windows
-          path: PAYDO-TJ-Windows.zip
+          name: paydo-tj-android-aab
+          path: build/app/outputs/bundle/release/app-release.aab
+          retention-days: 30
 
-
-  # ==========================
+  # ==========================================================
   # WEB
-  # ==========================
-  web:
-    name: Web
+  # ==========================================================
+  build-web:
+    name: Web (PWA)
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
 
-      - name: Create Web platform
-        run: flutter create --platforms=web --project-name=paydo_tj .
+      - name: Тайёр кардани сохтори native Web (агар набошад)
+        run: |
+          if [ ! -d "web" ]; then
+            flutter create . --platforms=web --org tj.paydo --project-name paydo_tj
+          fi
 
-      - name: Get dependencies
+      - name: Install dependencies
         run: flutter pub get
 
-      - name: Analyze
-        run: flutter analyze
+      - name: Сохтани иконкаи Web аз лого
+        run: dart run flutter_launcher_icons
 
       - name: Build Web
         run: flutter build web --release
 
-      - name: Upload Web
+      - name: Бор кардани Web build
         uses: actions/upload-artifact@v4
         with:
-          name: PAYDO-TJ-Web
+          name: paydo-tj-web
           path: build/web
+          retention-days: 30
 
-
-  # ==========================
-  # LINUX
-  # ==========================
-  linux:
-    name: Linux
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Linux dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            clang \
-            cmake \
-            ninja-build \
-            pkg-config \
-            libgtk-3-dev
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Create Linux platform
-        run: flutter create --platforms=linux --project-name=paydo_tj .
-
-      - name: Get dependencies
-        run: flutter pub get
-
-      - name: Analyze
-        run: flutter analyze
-
-      - name: Build Linux
-        run: flutter build linux --release
-
-      - name: Create ZIP
-        run: |
-          cd build/linux/x64/release
-          zip -r ../../../../PAYDO-TJ-Linux.zip bundle
-
-      - name: Upload Linux
-        uses: actions/upload-artifact@v4
-        with:
-          name: PAYDO-TJ-Linux
-          path: PAYDO-TJ-Linux.zip
-
-
-  # ==========================
-  # IOS
-  # ==========================
-  ios:
-    name: iOS
+  # ==========================================================
+  # iOS — bе имзо (unsigned). Барои App Store бояд дар Xcode/
+  # Apple Developer Program бо дасти худ имзо ва archive карда шавад —
+  # GitHub Actions наметавонад ин қадамро пурра ба ҷои шумо кунад бе
+  # сертификати Apple-и шумо (ниг. docs/ci_cd.md).
+  # ==========================================================
+  build-ios:
+    name: iOS (unsigned, барои санҷиш)
     runs-on: macos-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
 
-      - name: Create iOS platform
-        run: flutter create --platforms=ios --project-name=paydo_tj .
+      - name: Тайёр кардани сохтори native iOS (агар набошад)
+        run: |
+          if [ ! -d "ios" ]; then
+            flutter create . --platforms=ios --org tj.paydo --project-name paydo_tj
+          fi
 
-      - name: Get dependencies
+      - name: Ҷойгиркунии GoogleService-Info.plist аз secret (агар дода шуда бошад)
+        run: |
+          if [ -n "${{ secrets.FIREBASE_IOS_PLIST }}" ]; then
+            mkdir -p ios/Runner
+            echo "${{ secrets.FIREBASE_IOS_PLIST }}" | base64 --decode > ios/Runner/GoogleService-Info.plist
+          else
+            echo "⚠️ Secret FIREBASE_IOS_PLIST дода нашудааст — iOS build бе Firebase config кӯшиш мекунад (метавонад ноком шавад)."
+          fi
+
+      - name: Install dependencies
         run: flutter pub get
 
-      - name: Analyze
-        run: flutter analyze
+      - name: Сохтани иконкаи iOS аз лого
+        run: dart run flutter_launcher_icons
 
-      - name: Build iOS
+      - name: Build iOS (бе codesign)
         run: flutter build ios --release --no-codesign
 
-      - name: Upload iOS app
+      - name: Бор кардани iOS build (.app, барои санҷиш дар Simulator)
         uses: actions/upload-artifact@v4
         with:
-          name: PAYDO-TJ-iOS-App
+          name: paydo-tj-ios-unsigned
           path: build/ios/iphoneos/Runner.app
+          retention-days: 30
